@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { base } from "$app/paths";
   import { t } from "$lib/i18n";
   import Brand from "./Brand.svelte";
   import LangSwitcher from "./LangSwitcher.svelte";
@@ -27,7 +28,7 @@
       <a href="#docs" class="hover:text-ink-50 transition-colors">
         {$t("nav.docs")}
       </a>
-      <a href="/quiz" class="hover:text-ink-50 transition-colors">
+      <a href="{base}/quiz" class="hover:text-ink-50 transition-colors">
         {$t("nav.trivia")}
       </a>
     </nav>

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { base } from "$app/paths";
   import Header from "$lib/components/Header.svelte";
   import Footer from "$lib/components/Footer.svelte";
   import { tq, QUIZ_NS } from "$lib/quiz/i18n";
@@ -317,7 +318,7 @@
             {$tq("result.again")}
           </button>
           <a
-            href="/"
+            href="{base}/"
             class="inline-flex items-center rounded-md border border-ink-700 px-5 py-2.5 text-sm font-medium text-ink-300 transition-colors hover:border-ink-500 hover:text-ink-50"
           >
             {$tq("nav.back")}

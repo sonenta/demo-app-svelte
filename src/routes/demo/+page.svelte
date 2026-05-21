@@ -11,6 +11,7 @@
    * prerendered to a single HTML file and querystrings only resolve client-side.
    */
   import { onMount } from "svelte";
+  import { base } from "$app/paths";
   import Header from "$lib/components/Header.svelte";
   import LiveSection from "$lib/components/LiveSection.svelte";
   import Footer from "$lib/components/Footer.svelte";
@@ -80,7 +81,7 @@
         ?demo=loop
       </a>
       <a
-        href="/"
+        href="{base}/"
         class="ml-auto px-2 py-1 rounded-sm border border-ink-800 bg-ink-900 hover:text-ink-50 transition-colors"
       >
         ← back to showcase

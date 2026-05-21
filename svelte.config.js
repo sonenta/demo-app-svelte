@@ -5,10 +5,11 @@ import { vitePreprocess } from "@sveltejs/vite-plugin-svelte";
 export default {
   preprocess: vitePreprocess(),
   kit: {
+    // adapter-static writes to build/ (default). `fallback: index.html` ships
+    // an SPA shell so client-side navigations (e.g. /demos/svelte/?demo=play)
+    // and any not-prerendered path keep working under the static nginx mount.
     adapter: adapter({
-      pages: "dist",
-      assets: "dist",
-      fallback: undefined,
+      fallback: "index.html",
       precompress: false,
       strict: true,
     }),
@@ -16,6 +17,9 @@ export default {
       handleHttpError: "warn",
       handleMissingId: "ignore",
     },
+    // Production lives under https://verbumia.ca/demos/svelte/ — every internal
+    // link and asset URL must be prefixed via `base` from $app/paths.
+    paths: { base: "/demos/svelte" },
     alias: {
       "@verbumia/svelte-i18n": "src/lib/sdk/verbumia-svelte-i18n.ts",
       // @verbumia/feedback is consumed as the REAL local npm-pack
