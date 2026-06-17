@@ -11,15 +11,17 @@
  * dropped — so the feedback panel lists exactly the strings VISIBLE on
  * the page.
  *
- * The feedback SDK reads `globalThis.__sonenta_key_registry__.snapshot()`
+ * The feedback SDK reads `globalThis.__verbumia_key_registry__.snapshot()`
  * (the tiny contract); the namespace filter is applied SDK-side
- * (`rendered ∩ namespace`).
+ * (`rendered ∩ namespace`). NOTE: this global name is a FROZEN cross-package
+ * ABI baked into @sonenta/feedback — it must stay `__verbumia_key_registry__`
+ * (NOT rebranded) or the rendered-key handshake silently breaks.
  */
 import { writable, type Readable } from "svelte/store";
 
 export type DeclaredKey = { namespace: string; key: string };
 
-const GLOBAL = "__sonenta_key_registry__";
+const GLOBAL = "__verbumia_key_registry__";
 
 const _counts = new Map<string, { dk: DeclaredKey; n: number }>();
 const _version = writable(0);
