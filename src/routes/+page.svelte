@@ -12,7 +12,7 @@
   <title>Sonenta · live i18n demo · Svelte</title>
   <meta
     name="description"
-    content="SvelteKit + svelte-i18n showcase: translations served from the Sonenta CDN through a thin app-owned adapter, with live missing-key handling."
+    content="Live demo of Sonenta, the adaptive content layer — a SvelteKit quiz whose content is managed in Sonenta and shipped multilingual via the CDN."
   />
 </svelte:head>
 

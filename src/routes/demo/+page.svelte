@@ -43,7 +43,7 @@
   <title>{titleFor(mode)}</title>
   <meta
     name="description"
-    content="Sonenta live demo · autoplay scenario showcasing live missing-key handling in SvelteKit + svelte-i18n."
+    content="Live autoplay demo of Sonenta, the adaptive content layer — content managed in Sonenta and shipped multilingual to a SvelteKit app via the CDN."
   />
   <meta name="robots" content="noindex" />
 </svelte:head>
