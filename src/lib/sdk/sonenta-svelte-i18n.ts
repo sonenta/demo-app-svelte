@@ -1,9 +1,9 @@
 /**
- * Local stub of @verbumia/svelte-i18n.
+ * Local stub of @sonenta/svelte-i18n.
  *
  * Idiomatic Svelte adaptation of the V1 SDK contract that the React peer
- * already ships in @verbumia/react-i18next:
- *   - setupVerbumia(opts)  →  I18nInstance with reactive stores
+ * already ships in @sonenta/react-i18next:
+ *   - setupSonenta(opts)  →  I18nInstance with reactive stores
  *   - i18n.t               →  Readable<(key, opts?) => string>     (use as $t)
  *   - i18n.locale          →  Writable<string>
  *   - i18n.ready           →  Readable<boolean>                     (defaultNS attempted)
@@ -22,7 +22,7 @@
  *
  * Mirrors React stub semantics 1:1: skip-until-attempted, per-event dedupe,
  * keepalive POST, transport failure isolation. Replace with `npm i
- * @verbumia/svelte-i18n` once the real package is published — same surface,
+ * @sonenta/svelte-i18n` once the real package is published — same surface,
  * same behaviour.
  */
 import { derived, get, writable, type Readable, type Writable } from "svelte/store";
@@ -111,7 +111,7 @@ const resolveBundleUrl = (
   return `${cdnUrl}/${locale}/${ns}.json`;
 };
 
-export function setupVerbumia(opts: SetupOptions): I18nInstance {
+export function setupSonenta(opts: SetupOptions): I18nInstance {
   const {
     projectId,
     apiKey: _apiKey,
@@ -136,7 +136,7 @@ export function setupVerbumia(opts: SetupOptions): I18nInstance {
 
   const fetchImpl: typeof fetch =
     fetcher ?? (typeof fetch !== "undefined" ? fetch : (async () => {
-      throw new Error("[verbumia] no fetch available");
+      throw new Error("[sonenta] no fetch available");
     }) as unknown as typeof fetch);
 
   const loadLocale = async (loc: Locale) => {

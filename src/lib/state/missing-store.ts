@@ -1,5 +1,5 @@
 import { writable, type Readable } from "svelte/store";
-import type { MissingKeyEvent } from "@verbumia/svelte-i18n";
+import type { MissingKeyEvent } from "@local/svelte-i18n";
 
 type MissingState = {
   events: MissingKeyEvent[];

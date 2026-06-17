@@ -6,7 +6,7 @@
  * EXACTLY 10 questions, EXACTLY 5 options each, ids 1..10 in fixed order.
  * No copy here: every prompt/option is an i18n key in the `common`
  * namespace (`quiz.q.N.prompt`, `quiz.q.N.a.1..5`), resolved from the
- * shared seed via @verbumia/svelte-i18n — so offline and the live demo
+ * shared seed via the Sonenta i18n binding — so offline and the live demo
  * project render the same strings and the feedback widget rates the real
  * seeded keys.
  *

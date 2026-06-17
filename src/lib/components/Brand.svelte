@@ -17,6 +17,6 @@
     />
   </svg>
   <span class="text-[1.05rem] font-semibold tracking-tight text-ink-50">
-    Verbumia
+    Sonenta
   </span>
 </span>

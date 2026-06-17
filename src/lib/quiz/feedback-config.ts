@@ -1,5 +1,5 @@
 /**
- * Feedback mode resolver — dual-mode is the standard for all Verbumia
+ * Feedback mode resolver — dual-mode is the standard for all Sonenta
  * demos (master decision, kb sdk/demo-live-provisioning).
  *
  *  • DEFAULT (offline): an injected demo `fetchImpl` simulates the
@@ -8,8 +8,8 @@
  *
  *  • LIVE (opt-in, local-dev only): set `VITE_FEEDBACK_LIVE=1` before
  *    `vite dev` / `vite build`. The injected fetchImpl is dropped and the
- *    real `@verbumia/feedback/core` client talks to the running
- *    verbumia-api: genuine tos → server-minted session → getStrings →
+ *    real `@sonenta/feedback/core` client talks to the running
+ *    sonenta-api: genuine tos → server-minted session → getStrings →
  *    ratings/suggestions → realtime `feedback:` channel.
  *
  * Live config is the canonical shared demo project (resolve kb by topic
@@ -32,7 +32,7 @@ const LIVE = !!flag && flag !== "0" && flag !== "false";
 const OFFLINE: FeedbackMode = {
   live: false,
   // unused offline (the injected fetchImpl never performs real I/O)
-  apiBase: "https://api.verbumia.ca",
+  apiBase: "https://api.sonenta.dev",
   projectId: "demo-verbumia-ca",
 };
 

@@ -9,10 +9,10 @@
 </script>
 
 <svelte:head>
-  <title>Verbumia · live i18n demo · Svelte</title>
+  <title>Sonenta · live i18n demo · Svelte</title>
   <meta
     name="description"
-    content="Live demo of @verbumia/svelte-i18n — runtime missing-key handler, MIT-licensed, MCP-native, no per-word billing."
+    content="SvelteKit + svelte-i18n showcase: translations served from the Sonenta CDN through a thin app-owned adapter, with live missing-key handling."
   />
 </svelte:head>
 

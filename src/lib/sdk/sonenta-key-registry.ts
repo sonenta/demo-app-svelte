@@ -1,6 +1,6 @@
 /**
- * `@verbumia/*-i18n` rendered-key registry — §0e MOUNT-TRACKED +
- * REF-COUNTED (canonical model, == @verbumia/react-i18next@0.7.0;
+ * `@sonenta/*-i18n` rendered-key registry — §0e MOUNT-TRACKED +
+ * REF-COUNTED (canonical model, == @sonenta/react-i18next@0.7.0;
  * master ruling 2026-05-19).
  *
  * A key is registered while at least one mounted component declares it,
@@ -11,7 +11,7 @@
  * dropped — so the feedback panel lists exactly the strings VISIBLE on
  * the page.
  *
- * The feedback SDK reads `globalThis.__verbumia_key_registry__.snapshot()`
+ * The feedback SDK reads `globalThis.__sonenta_key_registry__.snapshot()`
  * (the tiny contract); the namespace filter is applied SDK-side
  * (`rendered ∩ namespace`).
  */
@@ -19,7 +19,7 @@ import { writable, type Readable } from "svelte/store";
 
 export type DeclaredKey = { namespace: string; key: string };
 
-const GLOBAL = "__verbumia_key_registry__";
+const GLOBAL = "__sonenta_key_registry__";
 
 const _counts = new Map<string, { dk: DeclaredKey; n: number }>();
 const _version = writable(0);

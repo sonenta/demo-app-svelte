@@ -1,10 +1,10 @@
 {
-  "name": "@verbumia/demo-app-svelte",
+  "name": "@sonenta/demo-app-svelte",
   "private": true,
   "version": "0.1.0",
   "type": "module",
   "license": "MIT",
-  "description": "Live showcase + dogfooding app for the @verbumia/svelte-i18n SDK.",
+  "description": "Live showcase + dogfooding app for SvelteKit + svelte-i18n — translations served from the Sonenta CDN through a thin app-owned adapter.",
   "scripts": {
     "dev": "vite dev",
     "build": "vite build",
@@ -12,7 +12,7 @@
     "typecheck": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json"
   },
   "dependencies": {
-    "@verbumia/feedback": "0.2.0"
+    "@sonenta/feedback": "^1.2.0"
   },
   "devDependencies": {
     "@sveltejs/adapter-static": "^3.0.6",

@@ -21,8 +21,8 @@
 
   const titleFor = (m: string) =>
     m === "loop"
-      ? "Verbumia · autoplay loop · Svelte"
-      : "Verbumia · autoplay · Svelte";
+      ? "Sonenta · autoplay loop · Svelte"
+      : "Sonenta · autoplay · Svelte";
 
   onMount(() => {
     const params = new URLSearchParams(window.location.search);
@@ -43,7 +43,7 @@
   <title>{titleFor(mode)}</title>
   <meta
     name="description"
-    content="Verbumia live demo · autoplay scenario showcasing the runtime missing-key handler in @verbumia/svelte-i18n."
+    content="Sonenta live demo · autoplay scenario showcasing live missing-key handling in SvelteKit + svelte-i18n."
   />
   <meta name="robots" content="noindex" />
 </svelte:head>

@@ -331,6 +331,6 @@
 
 <Footer />
 
-<!-- @verbumia/feedback — official /svelte adapter. Declares the visible
+<!-- @sonenta/feedback — official /svelte adapter. Declares the visible
      canonical quiz.* keys; isolated, never re-renders this page. -->
 <QuizFeedback />

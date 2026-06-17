@@ -1,6 +1,6 @@
 /**
  * Quiz feedback adapter — delegates to the OFFICIAL
- * `@verbumia/feedback/svelte` headless store adapter (v3 contract
+ * `@sonenta/feedback/svelte` headless store adapter (v3 contract
  * b6324d39; wire §1–§5 byte-identical to v2 c8e86de1). Master directive:
  * swap the hand-rolled /core wrapper → the official /svelte entry,
  * byte-identical, no rework.
@@ -12,7 +12,7 @@
  * panel, the ToS-consent step, the "thanks" flash, dynamic per-view keys,
  * and a locale rebuild (the client fixes `language` at construction).
  * Dual-mode is preserved: offline injects the demo `fetchImpl`; live omits
- * it so the real verbumia-api is used.
+ * it so the real sonenta-api is used.
  */
 import {
   createFeedback,
@@ -20,14 +20,14 @@ import {
   type FeedbackString,
   type RatingInput,
   type SuggestionInput,
-} from "@verbumia/feedback/svelte";
+} from "@sonenta/feedback/svelte";
 // v4 (contract 7980e3d4): tosVersion is NO LONGER an integrator config
 // field — the SDK bakes it as a build-time constant and sends it on
 // /v1/feedback/tos automatically. We only read it for display.
 // v4: SDK_TOS_VERSION is the SDK build-time constant (display only).
 // v5: resolveKeys() reads the rendered-key registry → RENDERED auto-
 // scoping (panel = on-screen keys only; no explicit prefetch list).
-import { SDK_TOS_VERSION, resolveKeys } from "@verbumia/feedback/core";
+import { SDK_TOS_VERSION, resolveKeys } from "@sonenta/feedback/core";
 import { createDemoFeedbackFetch, type ValueResolver } from "$lib/sdk/feedback-demo-backend";
 import { QUIZ_NS } from "./i18n";
 
@@ -80,7 +80,7 @@ export class QuizFeedback {
       // v6: namespace filter — panel = rendered ∩ ns "quiz" (no nav/chrome).
       namespace: QUIZ_NS,
       endUserId: this.endUserId,
-      // LIVE: real network to verbumia-api. OFFLINE (default): the
+      // LIVE: real network to sonenta-api. OFFLINE (default): the
       // contract-blessed fetchImpl seam simulates the feedback backend.
       ...(this.live
         ? {}

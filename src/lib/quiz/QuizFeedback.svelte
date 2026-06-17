@@ -1,6 +1,6 @@
 <script lang="ts">
   /**
-   * @verbumia/feedback — Svelte integration (core-adapter pattern,
+   * @sonenta/feedback — Svelte integration (core-adapter pattern,
    * authorized by master; backend confirmed there is no svelte-i18n
    * plugins[] slot / `/svelte` entry, that parity is a separate task).
    *
@@ -8,7 +8,7 @@
    * re-renders the host quiz. It lists the quiz-namespace strings on the
    * current view and lets an end user rate (1–5) or suggest a better
    * translation. sessionId is SERVER-MINTED via acceptTos() and shown
-   * read-only. All chrome is itself translated by @verbumia/svelte-i18n.
+   * read-only. All chrome is itself translated by the Sonenta i18n binding.
    */
   import { onMount } from "svelte";
   import { get } from "svelte/store";
@@ -16,9 +16,9 @@
   import { tq, tfb, QUIZ_NS } from "$lib/quiz/i18n";
   import { QuizFeedback } from "$lib/quiz/feedback.svelte";
   import { FEEDBACK_MODE } from "$lib/quiz/feedback-config";
-  import { registryVersion } from "$lib/sdk/verbumia-key-registry";
+  import { registryVersion } from "$lib/sdk/sonenta-key-registry";
   import { declareRenderedKeys } from "$lib/sdk/key-scope.svelte";
-  import { resolveKeys, type FeedbackString } from "@verbumia/feedback/core";
+  import { resolveKeys, type FeedbackString } from "@sonenta/feedback/core";
 
   // The floating CTA (quiz:action.rate) is always on screen while this
   // widget is mounted → declare it for the whole lifetime (persistent;
@@ -110,7 +110,7 @@
             {#if FEEDBACK_MODE.live}
               <span
                 class="mono inline-flex items-center gap-1 rounded-sm border border-emerald-600 px-1.5 py-0.5 text-[9px] uppercase tracking-[0.16em] text-emerald-400"
-                title="Live verbumia-api"
+                title="Live sonenta-api"
               >
                 <span class="h-1 w-1 rounded-full bg-emerald-400"></span>
                 live

@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
-# deploy.sh — build the SvelteKit demo locally and rsync build/ to Oyenga-web
-# under https://verbumia.ca/demos/svelte/.
+# deploy.sh — build the SvelteKit demo locally and rsync build/ to sonenta-web
+# under https://sonenta.com/demos/svelte/.
 #
 # Native deploy pattern (parité avec website/scripts/deploy.sh):
-#   Box   : oyenga@Oyenga-web
-#   Root  : /data/clients/verbumia.ca/www/demos/svelte
-#   Layout: FLAT DOCROOT (case B) — nginx vhost verbumia.ca serves
+#   Box   : sonenta@sonenta-web
+#   Root  : /data/clients/sonenta/sonenta.com/demos/svelte
+#   Layout: FLAT DOCROOT (case B) — nginx vhost sonenta.com serves
 #           /demos/svelte/ from $DEPLOY_ROOT directly (no `current` symlink).
 #           rsync build/ → $DEPLOY_ROOT with --delete; sub-second window where
 #           new + old files mix is acceptable for a static showcase.
@@ -16,7 +16,7 @@
 #
 # No Docker, no GitHub Actions — build runs HERE, rsync to the box. nginx
 # + certbot are already configured on the box. The bundle has no build-time
-# secrets (public demo, fetchImpl stubbed for @verbumia/feedback).
+# secrets (public demo, fetchImpl stubbed for @sonenta/feedback).
 #
 # Preflights (run before anything else):
 #   1. SSH reachability of DEPLOY_SSH_HOST
@@ -30,8 +30,8 @@
 #   ./scripts/deploy.sh --dry-run      # show what would happen, do nothing
 #
 # Optional env (sane defaults below):
-#   DEPLOY_SSH_HOST   (default: oyenga@Oyenga-web)
-#   DEPLOY_ROOT       (default: /data/clients/verbumia.ca/www/demos/svelte)
+#   DEPLOY_SSH_HOST   (default: sonenta@sonenta-web)
+#   DEPLOY_ROOT       (default: /data/clients/sonenta/sonenta.com/demos/svelte)
 
 set -euo pipefail
 
@@ -65,13 +65,13 @@ SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 REPO_DIR=$(cd "$SCRIPT_DIR/.." && pwd)
 cd "$REPO_DIR"
 
-if [[ ! -f package.json ]] || ! grep -q '"@verbumia/demo-app-svelte"' package.json; then
+if [[ ! -f package.json ]] || ! grep -q '"@sonenta/demo-app-svelte"' package.json; then
     echo "deploy: not in demo-app-svelte repo root (cwd=$REPO_DIR)" >&2
     exit 2
 fi
 
 # ---- preflight 1 — SSH reachability --------------------------------------
-: "${DEPLOY_SSH_HOST:=oyenga@Oyenga-web}"
+: "${DEPLOY_SSH_HOST:=sonenta@sonenta-web}"
 
 echo "==> preflight: ssh $DEPLOY_SSH_HOST"
 # BatchMode=yes: never prompt (auth must come from agent/key, not interactive).
@@ -146,7 +146,7 @@ if [[ -f "$ENV_FILE" ]]; then
 fi
 
 # ---- defaults ------------------------------------------------------------
-: "${DEPLOY_ROOT:=/data/clients/verbumia.ca/www/demos/svelte}"
+: "${DEPLOY_ROOT:=/data/clients/sonenta/sonenta.com/demos/svelte}"
 
 # ---- pick package manager ------------------------------------------------
 # Repo ships package-lock.json → npm ci.
@@ -198,7 +198,7 @@ fi
 
 echo
 echo "Deployed."
-echo "  URL    : https://verbumia.ca/demos/svelte/"
+echo "  URL    : https://sonenta.com/demos/svelte/"
 echo "  Commit : $GIT_SHA ($GIT_BRANCH)"
 echo "  Target : $DEPLOY_SSH_HOST:$DEPLOY_ROOT"
-echo "  Stamp  : $TS (curl https://verbumia.ca/demos/svelte/version.txt to verify)"
+echo "  Stamp  : $TS (curl https://sonenta.com/demos/svelte/version.txt to verify)"

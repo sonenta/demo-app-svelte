@@ -1,12 +1,12 @@
 /**
  * Demo feedback backend — an injected `fetchImpl` for the REAL
- * `@verbumia/feedback` `FeedbackClient`.
+ * `@sonenta/feedback` `FeedbackClient`.
  *
- * The genuine packed SDK (vendor/verbumia-feedback-0.1.0.tgz, source ==
- * frozen contract c8e86de1) provides every bit of client logic — ToS
+ * The genuine SDK (npm `@sonenta/feedback@^1.2.0`) provides every bit
+ * of client logic — ToS
  * bootstrap, rotating refresh, transparent 401-retry, debounced/size-capped
  * batched flush, never-throw-into-host. Only the HTTP layer is simulated
- * here, because there is no reachable Verbumia feedback backend in the demo
+ * here, because there is no reachable Sonenta feedback backend in the demo
  * / preview environment. `FeedbackConfig.fetchImpl` is the SDK's own,
  * contract-blessed seam for exactly this (tests / RN polyfills).
  *
@@ -60,7 +60,7 @@ export function createDemoFeedbackFetch(resolve: ValueResolver): typeof fetch {
   const sessionFor = (endUser: string) => `sess_${fnv(endUser).slice(2)}`;
 
   const aggKey = (project: string, session: string, lang: string) =>
-    `verbumia.fb.demo.${project}.${session}.${lang}`;
+    `sonenta.fb.demo.${project}.${session}.${lang}`;
 
   const loadAgg = (k: string): Agg => {
     if (typeof localStorage === "undefined") return {};

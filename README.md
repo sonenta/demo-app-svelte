@@ -1,6 +1,6 @@
-# @verbumia/demo-app-svelte
+# @sonenta/demo-app-svelte
 
-Live showcase + dogfooding app for `@verbumia/svelte-i18n`.
+Live showcase + dogfooding app for **SvelteKit + svelte-i18n** — translations served from the Sonenta CDN through a thin app-owned adapter, with live missing-key handling. A dedicated first-class binding is **coming soon**.
 
 Mirrors the React demo (`demo-app`) feature-for-feature in Svelte 5 / SvelteKit:
 multi-locale (FR / EN / ES), live missing-key inspector, autoplay scenario.
@@ -13,20 +13,21 @@ multi-locale (FR / EN / ES), live missing-key inspector, autoplay scenario.
 
 ## SDK
 
-Until `@verbumia/svelte-i18n` is published from `backend`, the import resolves
-to a local stub in `src/lib/sdk/verbumia-svelte-i18n.ts` (aliased in
-`svelte.config.js`). The stub implements the same surface the published
-package will ship:
+A dedicated first-class svelte-i18n binding is **coming soon**. Today this demo
+serves translations from the Sonenta CDN through a thin app-owned adapter — a
+local stub in `src/lib/sdk/sonenta-svelte-i18n.ts`, bound via the
+`@local/svelte-i18n` alias in `svelte.config.js`. The stub implements the same
+surface a published binding would ship:
 
 ```ts
-import { setupVerbumia } from "@verbumia/svelte-i18n";
+import { setupSonenta } from "@local/svelte-i18n";
 
-export const i18n = setupVerbumia({
+export const i18n = setupSonenta({
   projectId: "proj_xxx",
-  apiKey: import.meta.env.VITE_VERBUMIA_KEY,
+  apiKey: import.meta.env.VITE_SONENTA_KEY,
   defaultLocale: "en",
   namespaces: ["common"],
-  missingHandlerEndpoint: "https://api.verbumia.ca/v1/missing",
+  missingHandlerEndpoint: "https://api.sonenta.dev/v1/missing",
 });
 
 export const { t, locale, ready } = i18n;

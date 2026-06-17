@@ -11,7 +11,7 @@
  * survives until the LAST declarer unmounts — §0e canonical semantics.
  */
 import { onDestroy } from "svelte";
-import { track, untrack, type DeclaredKey } from "./verbumia-key-registry";
+import { track, untrack, type DeclaredKey } from "./sonenta-key-registry";
 
 export function declareRenderedKeys(getKeys: () => DeclaredKey[]) {
   let held = new Map<string, DeclaredKey>();
