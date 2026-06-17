@@ -9,7 +9,9 @@
     <p class="text-ink-300 text-sm">{$t("footer.tagline")}</p>
     <div class="ml-auto flex items-center gap-5 text-xs text-ink-300 mono">
       <a
-        href="https://github.com/sonenta"
+        href="https://github.com/sonenta/demo-app-svelte"
+        target="_blank"
+        rel="noopener noreferrer"
         class="hover:text-ink-50 transition-colors"
       >
         {$t("footer.repo")}
