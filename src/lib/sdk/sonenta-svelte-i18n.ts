@@ -192,7 +192,7 @@ export function setupSonenta(opts: SetupOptions): I18nInstance {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "X-Verbumia-Project": projectId,
+            "X-Sonenta-Project": projectId,
           },
           body: JSON.stringify({ events: batch }),
           keepalive: true,

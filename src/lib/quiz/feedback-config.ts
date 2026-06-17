@@ -33,7 +33,7 @@ const OFFLINE: FeedbackMode = {
   live: false,
   // unused offline (the injected fetchImpl never performs real I/O)
   apiBase: "https://api.sonenta.dev",
-  projectId: "demo-verbumia-ca",
+  projectId: "06a07109-3e3c-7bd7-8000-95368a87bd2e",
 };
 
 const LIVE_CFG: FeedbackMode = {
