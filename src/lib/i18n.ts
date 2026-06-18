@@ -32,19 +32,10 @@ const initialBundles = {
   es: { common: esCommon, quiz: esQuiz },
 } as Record<string, Record<string, Record<string, unknown>>>;
 
-// Stub fetch — guarantees ZERO real network regardless of environment: any CDN
-// load `start()` attempts returns 404, so `initialBundles` stays authoritative
-// (last-known-good), yet `start()` still runs `keyRegistry.attach()` to publish
-// the on-screen registry the feedback panel reads. (sdk's canonical offline
-// recipe — adapted: we keep missingHandler:"send"+transport for the missing-key
-// inspector, which is THIS demo's centerpiece, instead of missingHandler:"off".)
-const stubFetch: typeof fetch = async () =>
-  new Response("", { status: 404 });
-
 export const i18n = createSonentaI18n({
-  // Cosmetic offline placeholders — never sent anywhere (stub fetchImpl + custom
-  // transport mean no authenticated request). projectUuid is the real
-  // demo-public project (backend-confirmed); token only satisfies the type.
+  // Cosmetic offline placeholders — never sent anywhere (autoStart:false ⇒ no
+  // fetch, and the custom transport replaces the /v1/missing POST). projectUuid
+  // is the real demo-public project; token only satisfies the config type.
   token: "demo-public-key",
   projectUuid: "06a07109-3e3c-7bd7-8000-95368a87bd2e",
   namespaces: ["common", "quiz"],
@@ -53,17 +44,12 @@ export const i18n = createSonentaI18n({
   fallbackLng: "en",
   keySeparator: false,
   initialBundles,
-  // Truly zero-network: the LangSwitcher uses a hardcoded fr/en/es list (not
-  // `availableLanguages`), so suppress the language manifest + catalog fetches.
-  // (Matches demo-vue's validated offline recipe.)
-  disableLanguageManifest: true,
-  disableLanguageCatalog: true,
-  // `initialBundles` gives an instant first paint; `start()` still runs so it
-  // publishes the on-screen key registry (`attach()`) the feedback panel reads,
-  // but every fetch hits the 404 stub below → no real network, initialBundles
-  // stay authoritative.
-  autoStart: true,
-  fetchImpl: stubFetch,
+  // TRUE zero-network: `initialBundles` is primed synchronously and the key
+  // registry now attaches on CONSTRUCTION (@sonenta/i18n-core@^1.0.2), so we no
+  // longer need `start()` to publish it. `autoStart:false` ⇒ no CDN/manifest
+  // fetch at all — no stub fetchImpl, no disable flags needed. (Was an
+  // autoStart:true + 404-stub workaround on 0.9.0; sdk fixed finding #1 in 1.0.2.)
+  autoStart: false,
   // Capture every fallback the SDK serves and pipe it into the live inspector.
   missingHandler: "send",
   transport: (batch: MissingKeyEvent[]) =>
