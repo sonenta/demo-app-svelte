@@ -12,7 +12,9 @@
     "typecheck": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json"
   },
   "dependencies": {
-    "@sonenta/feedback": "^1.2.0"
+    "@sonenta/feedback": "^1.2.0",
+    "@sonenta/svelte-i18n": "^0.9.0",
+    "i18next": "^26.3.1"
   },
   "devDependencies": {
     "@sveltejs/adapter-static": "^3.0.6",

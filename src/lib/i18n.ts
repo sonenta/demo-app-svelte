@@ -1,19 +1,80 @@
-import { base } from "$app/paths";
-import { setupSonenta } from "@local/svelte-i18n";
+/**
+ * Official Sonenta i18n binding — `@sonenta/svelte-i18n@0.9.0` (beta).
+ *
+ * Replaces the former app-owned `@local/svelte-i18n` stub with the real
+ * native-Svelte-store SDK over `@sonenta/i18n-core` (i18next engine), so this
+ * demo resolves translations identically to the React / Vue bindings.
+ *
+ * OFFLINE-first deployable model: `initialBundles` primes all locales/namespaces
+ * synchronously from the static JSON (instant first paint, zero network), and
+ * `autoStart: false` keeps it fully offline (no CDN/runtime fetch). The
+ * missing-key handler is wired to a custom `transport` that streams events into
+ * the in-memory `missingStore` so the live inspector can render them.
+ *
+ * Keys are FLAT dotted literals ("hero.lede", "q.1.a.1") → `keySeparator: false`.
+ */
+import { get, type Readable } from "svelte/store";
+import { createSonentaI18n, type MissingKeyEvent } from "@sonenta/svelte-i18n";
 import { missingStore } from "./state/missing-store";
 
-export const i18n = setupSonenta({
-  projectId: "demo-sonenta",
-  apiKey: "demo-public-key",
-  baseUrl: "https://api.sonenta.dev",
-  // Locales sit at static/locales/, served from $base/locales/ at runtime.
-  cdnUrl: `${base}/locales`,
-  defaultLocale: "en",
-  defaultNS: "common",
+// Build-time snapshot — flat {locale: {namespace: {key: value}}} (same shape as
+// the CDN JSON). Imported from the static bundles the demo also ships verbatim.
+import enCommon from "../../static/locales/en/common.json";
+import enQuiz from "../../static/locales/en/quiz.json";
+import frCommon from "../../static/locales/fr/common.json";
+import frQuiz from "../../static/locales/fr/quiz.json";
+import esCommon from "../../static/locales/es/common.json";
+import esQuiz from "../../static/locales/es/quiz.json";
+
+const initialBundles = {
+  en: { common: enCommon, quiz: enQuiz },
+  fr: { common: frCommon, quiz: frQuiz },
+  es: { common: esCommon, quiz: esQuiz },
+} as Record<string, Record<string, Record<string, unknown>>>;
+
+export const i18n = createSonentaI18n({
+  // Cosmetic offline placeholders — no network call is made (autoStart:false +
+  // custom transport replaces the default /v1/missing POST). projectUuid is the
+  // real demo-public project (backend-confirmed).
+  token: "demo-public-key",
+  projectUuid: "06a07109-3e3c-7bd7-8000-95368a87bd2e",
   namespaces: ["common", "quiz"],
-  missingHandlerEndpoint: "https://api.sonenta.dev/v1/missing",
-  debounceMs: 5000,
-  transport: (batch) => missingStore.pushBatch(batch),
+  defaultNS: "common",
+  defaultLocale: "en",
+  fallbackLng: "en",
+  keySeparator: false,
+  initialBundles,
+  // `initialBundles` gives an instant, offline-safe first paint; `start()`
+  // then refreshes from the public CDN (demo-public is public/no-auth) and —
+  // critically — publishes the on-screen key registry (`attach()`), which the
+  // feedback panel reads. A failed fetch (offline) keeps the snapshot.
+  autoStart: true,
+  // Capture every fallback the SDK serves and pipe it into the live inspector.
+  missingHandler: "send",
+  transport: (batch: MissingKeyEvent[]) =>
+    missingStore.pushBatch(
+      batch.map((e) => ({
+        key: e.key,
+        ns: e.namespace,
+        locale: e.language_code,
+        ts: Date.now(),
+        fallback: e.source_value ?? e.key,
+      })),
+    ),
 });
 
-export const { t, locale, ready, setLocale, exists } = i18n;
+// --- Compatibility re-exports -------------------------------------------------
+// The app was written against the stub's names; alias the official store API so
+// components keep importing `locale` / `setLocale` / `exists` unchanged.
+export const t = i18n.t;
+export const ready = i18n.ready;
+/** Active language (BCP-47) — read-only store; was `locale` on the stub. */
+export const locale: Readable<string> = i18n.language;
+/** Change the active language; was `setLocale` on the stub. */
+export const setLocale = (l: string) => void i18n.setLanguage(l);
+
+/** Does `key` resolve in `ns`? (i18next returns the key itself on a miss.) */
+export function exists(key: string, ns?: string): boolean {
+  const fn = get(i18n.t);
+  return fn(key, { ns }) !== key;
+}

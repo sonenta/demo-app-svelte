@@ -26,13 +26,15 @@ export type QuizT = (
 export const QUIZ_NS = "quiz";
 
 export const tq: Readable<QuizT> = derived(t, ($t) => {
-  const fn: QuizT = (key, values) => $t(key, { ns: QUIZ_NS, values });
+  // Official t() takes interpolation values FLAT (i18next-native), not nested
+  // under `values` — spread them into the options object.
+  const fn: QuizT = (key, values) => $t(key, { ns: QUIZ_NS, ...values });
   return fn;
 });
 
 /** Feedback-widget chrome — local UI in `common`, not seeded / not rated
  *  (the ns=quiz panel filter excludes it). */
 export const tfb: Readable<QuizT> = derived(t, ($t) => {
-  const fn: QuizT = (key, values) => $t(`quizfb.${key}`, { values });
+  const fn: QuizT = (key, values) => $t(`quizfb.${key}`, { ...values });
   return fn;
 });

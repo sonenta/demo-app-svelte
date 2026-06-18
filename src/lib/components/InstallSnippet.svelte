@@ -2,28 +2,25 @@
   import { t } from "$lib/i18n";
   import CodeBlock from "./CodeBlock.svelte";
 
-  // SvelteKit + svelte-i18n: translations served from the Sonenta CDN
-  // through a thin app-owned adapter. A dedicated first-class binding is
-  // coming soon, so there is no install line for it yet.
-  const SETUP = `// SvelteKit + svelte-i18n — translations from the Sonenta CDN via a
-// thin app-owned adapter (a dedicated first-class binding is coming soon).
-import { setupSonenta } from "@local/svelte-i18n";
+  // SvelteKit — the official native Svelte-store binding @sonenta/svelte-i18n
+  // (over @sonenta/i18n-core), no svelte-i18n dependency.
+  const SETUP = `// npm i @sonenta/svelte-i18n
+import { createSonentaI18n } from "@sonenta/svelte-i18n";
 
-export const i18n = setupSonenta({
-  projectId: "proj_xxx",
-  apiKey: import.meta.env.VITE_SONENTA_KEY,
+export const i18n = createSonentaI18n({
+  token: import.meta.env.VITE_SONENTA_KEY,
+  projectUuid: "proj_xxx",
   defaultLocale: "en",
-});
-
-export const { t, locale, ready } = i18n;`;
+});`;
 
   const USAGE = `<script>
-  import { t, locale } from "$lib/i18n";
+  import { i18n } from "$lib/i18n";
+  const { t, setLanguage } = i18n;
 <\/script>
 
 <h1>{$t("hero.title")}</h1>
 
-<button onclick={() => locale.set("fr")}>FR</button>`;
+<button onclick={() => setLanguage("fr")}>FR</button>`;
 </script>
 
 <section id="install" class="mx-auto max-w-6xl px-6 py-20">

@@ -25,9 +25,7 @@
   let countLabel = $derived(
     count === 0
       ? $t("live.empty")
-      : $t(count === 1 ? "live.count.one" : "live.count.other", {
-          values: { count },
-        }),
+      : $t(count === 1 ? "live.count.one" : "live.count.other", { count }),
   );
 
   const formatTime = (ts: number, loc: string) => {

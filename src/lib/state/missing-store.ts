@@ -1,5 +1,15 @@
 import { writable, type Readable } from "svelte/store";
-import type { MissingKeyEvent } from "@local/svelte-i18n";
+
+/** Display shape for the live inspector. The SDK's `MissingKeyEvent`
+ *  ({key, namespace, language_code, source_value}) is adapted into this in the
+ *  i18n `transport`, stamping a client-side `ts`. */
+export type MissingKeyEvent = {
+  key: string;
+  ns: string;
+  locale: string;
+  ts: number;
+  fallback: string;
+};
 
 type MissingState = {
   events: MissingKeyEvent[];

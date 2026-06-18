@@ -2,8 +2,7 @@
   import { base } from "$app/paths";
   import Header from "$lib/components/Header.svelte";
   import Footer from "$lib/components/Footer.svelte";
-  import { tq, QUIZ_NS } from "$lib/quiz/i18n";
-  import { declareRenderedKeys } from "$lib/sdk/key-scope.svelte";
+  import { tq } from "$lib/quiz/i18n";
   import { QuizGame } from "$lib/quiz/game.svelte";
   import {
     OPTIONS,
@@ -36,57 +35,12 @@
     muted: "border-ink-800 bg-ink-900/40 text-ink-500",
   };
 
-  // §0e MOUNT-TRACKED scoping: declare exactly the quiz strings VISIBLE on
-  // the current view. meta.title/meta.tagline are always on screen on
-  // /quiz (persistent — stay declared across every phase); the rest is
-  // the live region. Navigating away removes a region's keys; nothing is
-  // ever globally reset, so persistent strings never drop.
-  const visibleKeys = $derived.by<string[]>(() => {
-    const keys = ["meta.title", "meta.tagline"]; // persistent header
-    if (game.phase === "setup") {
-      keys.push(
-        "setup.heading",
-        "setup.blurb",
-        "setup.player1.label",
-        "setup.player1.default",
-        "setup.player2.label",
-        "setup.player2.default",
-        "setup.start",
-      );
-    } else if (game.phase === "playing") {
-      const n = game.question.n;
-      keys.push(
-        "hud.question",
-        "hud.turn",
-        "hud.score",
-        promptKey(n),
-        ...OPTIONS.map((o) => optionKey(n, o)),
-      );
-      if (game.revealed) {
-        keys.push(
-          game.selected === game.question.correct
-            ? "feedback.correct"
-            : "feedback.wrong",
-          game.progress.current === game.progress.total
-            ? "action.finish"
-            : "action.next",
-        );
-      }
-    } else {
-      keys.push(
-        "result.heading",
-        game.winner === -1 ? "result.tie" : "result.winner",
-        "result.scoreline",
-        "result.again",
-        "nav.back",
-      );
-    }
-    return keys;
-  });
-
-  declareRenderedKeys(() =>
-    visibleKeys.map((key) => ({ namespace: QUIZ_NS, key })),
-  );
+  // Rendered-key scoping is now owned by @sonenta/i18n-core: every quiz string
+  // resolved through `$tq` (→ the official `t()`) is auto-tracked into the
+  // on-screen key registry, so the feedback panel scopes itself with no
+  // app-side declaration. (Beta note: the Svelte binding's registry ACCUMULATES
+  // rendered keys for the instance lifetime rather than per-view — reported to
+  // sdk; acceptable for this demo.)
 
   const startGame = () =>
     game.start(

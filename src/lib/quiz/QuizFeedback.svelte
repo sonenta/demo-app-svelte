@@ -16,14 +16,13 @@
   import { tq, tfb, QUIZ_NS } from "$lib/quiz/i18n";
   import { QuizFeedback } from "$lib/quiz/feedback.svelte";
   import { FEEDBACK_MODE } from "$lib/quiz/feedback-config";
-  import { registryVersion } from "$lib/sdk/sonenta-key-registry";
-  import { declareRenderedKeys } from "$lib/sdk/key-scope.svelte";
   import { resolveKeys, type FeedbackString } from "@sonenta/feedback/core";
 
-  // The floating CTA (quiz:action.rate) is always on screen while this
-  // widget is mounted → declare it for the whole lifetime (persistent;
-  // §0e: stays across every quiz view, like the header eyebrow/title).
-  declareRenderedKeys(() => [{ namespace: QUIZ_NS, key: "action.rate" }]);
+  // Rendered-key tracking is now owned by @sonenta/i18n-core (the registry
+  // PRODUCER): every key resolved through the official `t()` is auto-tracked
+  // into `globalThis.__verbumia_key_registry__`, which `resolveKeys` reads.
+  // The persistent CTA (quiz:action.rate) is rendered via `$tq` so it is
+  // tracked automatically — no app-owned declaration needed.
 
   const fb = new QuizFeedback({
     apiBase: FEEDBACK_MODE.apiBase,
@@ -47,12 +46,18 @@
   // actually holding the rendered keys so the resolver never echoes raw
   // keys offline.
   $effect(() => {
+    // Reload the scoped strings when the widget OPENS, the language changes
+    // ($t), or the /core client rebuilds (fb.rev). NOTE: the SDK key registry
+    // exposes no reactive change signal (snapshot/isPopulated/reset only), so
+    // we reload on these app-controlled triggers rather than on live registry
+    // mutation — flagged to sdk as a 0.9.0 beta finding.
     void $t;
-    void $registryVersion;
     fb.rev;
+    const open = fb.open;
+    const consented = fb.consented;
     const probe = resolveKeys(undefined, QUIZ_NS)[0]?.key;
     const bundleReady = probe == null || exists(probe, QUIZ_NS);
-    if (fb.open && fb.consented && bundleReady) void fb.load();
+    if (open && consented && bundleReady) void fb.load();
   });
 
   let mounted = $state(false);
