@@ -32,10 +32,19 @@ const initialBundles = {
   es: { common: esCommon, quiz: esQuiz },
 } as Record<string, Record<string, Record<string, unknown>>>;
 
+// Stub fetch — guarantees ZERO real network regardless of environment: any CDN
+// load `start()` attempts returns 404, so `initialBundles` stays authoritative
+// (last-known-good), yet `start()` still runs `keyRegistry.attach()` to publish
+// the on-screen registry the feedback panel reads. (sdk's canonical offline
+// recipe — adapted: we keep missingHandler:"send"+transport for the missing-key
+// inspector, which is THIS demo's centerpiece, instead of missingHandler:"off".)
+const stubFetch: typeof fetch = async () =>
+  new Response("", { status: 404 });
+
 export const i18n = createSonentaI18n({
-  // Cosmetic offline placeholders — no network call is made (autoStart:false +
-  // custom transport replaces the default /v1/missing POST). projectUuid is the
-  // real demo-public project (backend-confirmed).
+  // Cosmetic offline placeholders — never sent anywhere (stub fetchImpl + custom
+  // transport mean no authenticated request). projectUuid is the real
+  // demo-public project (backend-confirmed); token only satisfies the type.
   token: "demo-public-key",
   projectUuid: "06a07109-3e3c-7bd7-8000-95368a87bd2e",
   namespaces: ["common", "quiz"],
@@ -49,11 +58,12 @@ export const i18n = createSonentaI18n({
   // (Matches demo-vue's validated offline recipe.)
   disableLanguageManifest: true,
   disableLanguageCatalog: true,
-  // `initialBundles` gives an instant, offline-safe first paint; `start()`
-  // then refreshes from the public CDN (demo-public is public/no-auth) and —
-  // critically — publishes the on-screen key registry (`attach()`), which the
-  // feedback panel reads. A failed fetch (offline) keeps the snapshot.
+  // `initialBundles` gives an instant first paint; `start()` still runs so it
+  // publishes the on-screen key registry (`attach()`) the feedback panel reads,
+  // but every fetch hits the 404 stub below → no real network, initialBundles
+  // stay authoritative.
   autoStart: true,
+  fetchImpl: stubFetch,
   // Capture every fallback the SDK serves and pipe it into the live inspector.
   missingHandler: "send",
   transport: (batch: MissingKeyEvent[]) =>
