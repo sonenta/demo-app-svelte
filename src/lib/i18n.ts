@@ -44,6 +44,11 @@ export const i18n = createSonentaI18n({
   fallbackLng: "en",
   keySeparator: false,
   initialBundles,
+  // Truly zero-network: the LangSwitcher uses a hardcoded fr/en/es list (not
+  // `availableLanguages`), so suppress the language manifest + catalog fetches.
+  // (Matches demo-vue's validated offline recipe.)
+  disableLanguageManifest: true,
+  disableLanguageCatalog: true,
   // `initialBundles` gives an instant, offline-safe first paint; `start()`
   // then refreshes from the public CDN (demo-public is public/no-auth) and —
   // critically — publishes the on-screen key registry (`attach()`), which the
