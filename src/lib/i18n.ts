@@ -5,37 +5,37 @@
  * native-Svelte-store SDK over `@sonenta/i18n-core` (i18next engine), so this
  * demo resolves translations identically to the React / Vue bindings.
  *
- * OFFLINE-first deployable model: `initialBundles` primes all locales/namespaces
- * synchronously from the static JSON (instant first paint, zero network), and
- * `autoStart: false` keeps it fully offline (no CDN/runtime fetch). The
- * missing-key handler is wired to a custom `transport` that streams events into
- * the in-memory `missingStore` so the live inspector can render them.
+ * SELF-HOSTED CDN model (master-approved 2026-07-13). The bundles are served
+ * from a same-origin `cdnBase` — static files shipped in this build, in the
+ * SDK's own CDN layout (`/cdn/p/<uuid>/<version>/latest/<locale>/<ns>.json`).
+ * Still zero EXTERNAL network: every fetch is same-origin against our own
+ * `static/` output. The missing-key handler streams events through a custom
+ * `transport` into the in-memory `missingStore` for the live inspector.
+ *
+ * WHY NOT `initialBundles` + `autoStart:false` (the previous config): that
+ * combination SILENTLY DISABLES MISSING-KEY REPORTING. i18n-core's
+ * `_handleMissing` early-returns unless `_attempted.has(cacheKey)`, and
+ * `_attempted` is only ever populated inside `_loadBundle`'s `finally` — so with
+ * no fetch, nothing is ever "attempted" and every miss is discarded, with no
+ * error. It killed this demo's centrepiece in production for weeks. Fetching our
+ * own bundles makes `_loadBundle` run, which releases the guard.
+ * This is a WORKAROUND FOR OUR APP ONLY — the core bug is still open with `sdk`
+ * as a P1 (offline-first consumers remain broken); do not treat it as closed.
  *
  * Keys are FLAT dotted literals ("hero.lede", "q.1.a.1") → `keySeparator: false`.
+ * Do NOT drop `keySeparator` — without it the SDK probes the API for key_style,
+ * which 401s on a public demo (per demo-app-vue).
  */
 import { get, type Readable } from "svelte/store";
+import { base } from "$app/paths";
 import { createSonentaI18n, type MissingKeyEvent } from "@sonenta/svelte-i18n";
 import { missingStore } from "./state/missing-store";
 
-// Build-time snapshot — flat {locale: {namespace: {key: value}}} (same shape as
-// the CDN JSON). Imported from the static bundles the demo also ships verbatim.
-import enCommon from "../../static/locales/en/common.json";
-import enQuiz from "../../static/locales/en/quiz.json";
-import frCommon from "../../static/locales/fr/common.json";
-import frQuiz from "../../static/locales/fr/quiz.json";
-import esCommon from "../../static/locales/es/common.json";
-import esQuiz from "../../static/locales/es/quiz.json";
-
-const initialBundles = {
-  en: { common: enCommon, quiz: enQuiz },
-  fr: { common: frCommon, quiz: frQuiz },
-  es: { common: esCommon, quiz: esQuiz },
-} as Record<string, Record<string, Record<string, unknown>>>;
-
 export const i18n = createSonentaI18n({
-  // Cosmetic offline placeholders — never sent anywhere (autoStart:false ⇒ no
-  // fetch, and the custom transport replaces the /v1/missing POST). projectUuid
-  // is the real demo-public project; token only satisfies the config type.
+  // `token` only satisfies the config type — nothing is sent anywhere: the CDN
+  // is same-origin static files and the custom transport replaces the
+  // /v1/missing POST. projectUuid is the real demo-public project, and is part
+  // of the CDN path below.
   token: "demo-public-key",
   projectUuid: "06a07109-3e3c-7bd7-8000-95368a87bd2e",
   namespaces: ["common", "quiz"],
@@ -43,13 +43,15 @@ export const i18n = createSonentaI18n({
   defaultLocale: "en",
   fallbackLng: "en",
   keySeparator: false,
-  initialBundles,
-  // TRUE zero-network: `initialBundles` is primed synchronously and the key
-  // registry now attaches on CONSTRUCTION (@sonenta/i18n-core@^1.0.2), so we no
-  // longer need `start()` to publish it. `autoStart:false` ⇒ no CDN/manifest
-  // fetch at all — no stub fetchImpl, no disable flags needed. (Was an
-  // autoStart:true + 404-stub workaround on 0.9.0; sdk fixed finding #1 in 1.0.2.)
-  autoStart: false,
+  // Our OWN bundles, same-origin, in the SDK's CDN layout. autoStart is left at
+  // its default (true) so `_loadBundle` actually runs — that is what releases
+  // the missing-key guard. See the header note.
+  cdnBase: `${base}/cdn`,
+  version: "main",
+  // The manifest/catalog endpoints only exist on the real CDN; we ship bundles
+  // only. Disabling them keeps the network clean (no 404s per visitor).
+  disableLanguageManifest: true,
+  disableLanguageCatalog: true,
   // Capture every fallback the SDK serves and pipe it into the live inspector.
   missingHandler: "send",
   transport: (batch: MissingKeyEvent[]) =>

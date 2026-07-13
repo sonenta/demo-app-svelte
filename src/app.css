@@ -180,3 +180,81 @@ body {
     scroll-behavior: auto !important;
   }
 }
+
+/* Vertical (9:16) capture treatment — /demo only.
+ *
+ * Gated on BOTH `[data-demo-vertical]` (set by the /demo route alone, so /
+ * and /quiz are untouched) AND a max-width query (so desktop and tablet
+ * render byte-identically). Layout and type-scale steps only: no new colours,
+ * no new tokens, no copy changes. Emerald stays the accent on the payoff beat.
+ *
+ * Header needs no rule here — it already collapses to Brand + LangSwitcher
+ * below `md`, and the LangSwitcher is precisely what the capture films.
+ */
+@media (max-width: 430px) {
+  [data-demo-vertical] footer {
+    display: none;
+  }
+
+  /* OPTION A (marketing's call): drop the hero so BOTH the trigger (cause) and
+   * the inspector (payoff) fit in an 844px frame. Measured: header 57 + hero 200
+   * + trigger 539 + inspector 343 = ~1190px of content — the hero is the most
+   * expendable 200px, since a Short burns its own hook into the frame anyway.
+   * The locale switcher is NOT here: it lives in the header, which survives. */
+  [data-demo-vertical] main > section:first-of-type {
+    display: none;
+  }
+
+  /* Compress both cards: even without the hero, 57+539+343 still overflows 844. */
+  [data-demo-vertical] #live .card-blurb {
+    display: none;
+  }
+  [data-demo-vertical] #live li,
+  [data-demo-vertical] #live button[class*="py-3"] {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+
+  /* Reclaim vertical budget: the 9:16 frame is height-starved, not width-starved.
+   * #live carries mt-12 for the hero that is now hidden — that gap is dead space. */
+  [data-demo-vertical] #live {
+    margin-top: 0;
+  }
+  [data-demo-vertical] #live > div {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    gap: 1rem;
+  }
+
+  /* Narrative order: trigger (cause) above, inspector (payoff) below. */
+  [data-demo-vertical] #live > div > :first-child {
+    order: 2;
+  }
+  [data-demo-vertical] #live > div > :last-child {
+    order: 1;
+  }
+
+  /* Legibility on a phone-sized frame: step UP the existing scale.
+   * The missing-key row is the payoff beat — it has to read on video. */
+  [data-demo-vertical] #live li .mono {
+    font-size: 1rem; /* text-base, was text-[13px] */
+  }
+  [data-demo-vertical] #live li .mono.uppercase {
+    font-size: 0.75rem; /* text-xs, was text-[10px] */
+  }
+
+  /* The timestamp column squeezes the key name to "common : land…" at 390px.
+   * The key IS the payoff — drop the clock, which reads as noise in a 5s Short
+   * and buys the key its full width back. */
+  [data-demo-vertical] #live li time {
+    display: none;
+  }
+
+  /* Even with the clock gone, long keys still clip (`truncate` = overflow hidden).
+   * A half-readable key is a dead payoff, so let it WRAP rather than ellipsis. */
+  [data-demo-vertical] #live li code {
+    overflow: visible;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+}

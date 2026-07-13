@@ -91,7 +91,7 @@
     {/if}
   </div>
 
-  <p class="px-5 py-3 text-xs text-ink-300 border-b border-ink-800">
+  <p class="card-blurb px-5 py-3 text-xs text-ink-300 border-b border-ink-800">
     {$t("live.subtitle")}
   </p>
 

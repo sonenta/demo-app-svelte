@@ -46,7 +46,7 @@
       {$t("live.trigger.title")}
     </h3>
   </div>
-  <p class="text-sm text-ink-300 mb-4">{$t("live.trigger.subtitle")}</p>
+  <p class="card-blurb text-sm text-ink-300 mb-4">{$t("live.trigger.subtitle")}</p>
 
   <div
     class="flex items-center gap-1 mb-4 p-1 rounded-full border border-ink-800 bg-ink-950/60"

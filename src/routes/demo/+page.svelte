@@ -36,6 +36,13 @@
       window.history.replaceState(null, "", next);
       mode = "play";
     }
+
+    // Opts this route alone into the narrow 9:16 capture rules in app.css.
+    // Set on the root (not a wrapper) because Header and Footer render as
+    // siblings of <main>; removed on leave so / and /quiz never see it.
+    document.documentElement.setAttribute("data-demo-vertical", "");
+    return () =>
+      document.documentElement.removeAttribute("data-demo-vertical");
   });
 </script>
 
@@ -50,7 +57,7 @@
 
 <Header />
 <main class="flex-1">
-  <section class="mx-auto max-w-6xl px-6 pt-12 pb-6">
+  <section class="mx-auto max-w-6xl px-6 pt-12 pb-6 max-[430px]:pt-6 max-[430px]:pb-2">
     <p
       class="mono text-[11px] uppercase tracking-[0.22em] text-emerald-400 mb-3 inline-flex items-center gap-2"
     >
@@ -66,7 +73,7 @@
       {$t("live.subtitle")}
     </p>
     <div
-      class="mt-4 flex flex-wrap items-center gap-2 mono text-[11px] text-ink-300"
+      class="mt-4 flex flex-wrap items-center gap-2 mono text-[11px] text-ink-300 max-[430px]:hidden"
     >
       <a
         href="?demo=play"
