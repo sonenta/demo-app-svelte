@@ -207,6 +207,19 @@ fi
 TS=$(date -u +%Y%m%d-%H%M%SZ)
 run "printf '%s\n%s\n%s\n' '$GIT_SHA' '$GIT_BRANCH' '$TS' > '$BUILD_TREE/build/version.txt'"
 
+# The deployed artefact SELF-REPORTS the SDK versions it was actually built
+# against, read from the worktree's INSTALLED node_modules (not from
+# package.json, which is a request, not a fact).
+#
+# Why: "what SDK does the deploy run?" had no verifiable answer. The provenance
+# chain (stamp -> commit -> lockfile -> npm ci) is an ARGUMENT; a curl is a FACT.
+# Bundle markers cannot settle it either — i18n-core 1.1.2 and 1.1.8 share every
+# string literal, so nothing in the minified bundle distinguishes them. marketing
+# was about to send a human to film a build whose SDK version nobody could prove.
+#
+#   curl https://sonenta.com/demos/svelte/deps.txt
+run "node -e \"const fs=require('fs'),p=(n)=>{try{return require(require.resolve(n+'/package.json',{paths:['$BUILD_TREE']})).version}catch(e){return 'ABSENT'}};fs.writeFileSync('$BUILD_TREE/build/deps.txt',['@sonenta/i18n-core','@sonenta/svelte-i18n','@sonenta/feedback','i18next'].map(n=>n+'@'+p(n)).join('\\n')+'\\n')\""
+
 # ---- push ----------------------------------------------------------------
 echo "==> rsync → $DEPLOY_SSH_HOST:$DEPLOY_ROOT/"
 # Pre-create the deploy root so the first rsync hop doesn't need mkdir -p.
