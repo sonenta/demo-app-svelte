@@ -218,7 +218,12 @@ run "printf '%s\n%s\n%s\n' '$GIT_SHA' '$GIT_BRANCH' '$TS' > '$BUILD_TREE/build/v
 # was about to send a human to film a build whose SDK version nobody could prove.
 #
 #   curl https://sonenta.com/demos/svelte/deps.txt
-run "node -e \"const fs=require('fs'),p=(n)=>{try{return require(require.resolve(n+'/package.json',{paths:['$BUILD_TREE']})).version}catch(e){return 'ABSENT'}};fs.writeFileSync('$BUILD_TREE/build/deps.txt',['@sonenta/i18n-core','@sonenta/svelte-i18n','@sonenta/feedback','i18next'].map(n=>n+'@'+p(n)).join('\\n')+'\\n')\""
+# NOTE: read package.json FROM DISK, not via require.resolve. Most @sonenta/*
+# packages do not expose "./package.json" in their exports map, so resolve()
+# fails and the file would report the SDK as ABSENT on a build that ships it.
+# A provenance file that lies is worse than no provenance file. An exports map
+# cannot block a filesystem read.
+run "node -e \"const fs=require('fs');const v=(n)=>{try{return JSON.parse(fs.readFileSync('$BUILD_TREE/node_modules/'+n+'/package.json','utf8')).version}catch(e){return 'NOT-INSTALLED'}};fs.writeFileSync('$BUILD_TREE/build/deps.txt',['@sonenta/i18n-core','@sonenta/svelte-i18n','@sonenta/feedback','i18next'].map(n=>n+'@'+v(n)).join('\\n')+'\\n')\""
 
 # ---- push ----------------------------------------------------------------
 echo "==> rsync → $DEPLOY_SSH_HOST:$DEPLOY_ROOT/"
