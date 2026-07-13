@@ -66,7 +66,10 @@
       <span
         class="mono text-[10px] uppercase tracking-[0.18em] text-amber-bright bg-amber-soft px-1.5 py-0.5 rounded-sm ml-auto"
       >
-        live
+        <!-- NOT "live": realtime is dev-only in production (locked founder
+             decision), so a "live" pill on the telemetry panel of a public demo
+             is a false product claim. It is watching the dev-time render loop. -->
+        watching
       </span>
     {/if}
   </div>
