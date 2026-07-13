@@ -46,6 +46,12 @@ export const i18n = createSonentaI18n({
   // Our OWN bundles, same-origin, in the SDK's CDN layout. autoStart is left at
   // its default (true) so `_loadBundle` actually runs — that is what releases
   // the missing-key guard. See the header note.
+  //
+  // The `${base}` prefix is LOAD-BEARING, not cosmetic (website, 2026-07-13).
+  // We deploy into website's docroot; their deploy rsyncs --delete and only
+  // EXCLUDES /demos/svelte/. An absolute `/cdn` would put the bundles OUTSIDE
+  // that exclusion, so their next deploy would silently delete them and this
+  // demo would render raw keys. Keep it base-relative.
   cdnBase: `${base}/cdn`,
   version: "main",
   // The manifest/catalog endpoints only exist on the real CDN; we ship bundles
