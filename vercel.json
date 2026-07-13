@@ -23,6 +23,15 @@
       ]
     },
     {
+      "source": "/cdn/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=60, stale-while-revalidate=600"
+        }
+      ]
+    },
+    {
       "source": "/(favicon.svg|og.svg)",
       "headers": [
         {
