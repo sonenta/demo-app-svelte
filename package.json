@@ -9,7 +9,8 @@
     "dev": "vite dev",
     "build": "vite build",
     "preview": "vite preview",
-    "typecheck": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json"
+    "typecheck": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+    "prebuild": "node scripts/sync-cdn.mjs"
   },
   "dependencies": {
     "@sonenta/feedback": "^1.2.0",
