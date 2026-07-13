@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { t } from "$lib/i18n";
+  import { i18n, t } from "$lib/i18n";
   import { scenarioStore } from "$lib/state/scenario-store";
   import { missingStore } from "$lib/state/missing-store";
 
@@ -21,7 +21,22 @@
   onMount(() => {
     scenarioStore.attach(
       (key) => $t(key),
-      () => missingStore.clear(),
+      () => {
+        missingStore.clear();
+        // Clearing OUR panel is not enough: a missing key is reportable ONCE
+        // per i18n instance. i18next parks the key as a literal in the source
+        // language on the first miss, and fallbackLng routes every other locale
+        // THROUGH that park — so the key stops being missing *everywhere* and
+        // the handler is never called again. The loop's payoff panel therefore
+        // died after cycle 1 and stayed dead (live bug: "No misses yet" from
+        // cycle 2 onward). No arrangement of scenario beats could escape it.
+        //
+        // resetMissingDedup() UN-PARKS the keys from i18next's store, which is
+        // the only exit. Reachable on the binding since @sonenta/svelte-i18n
+        // @1.1.0 (needs @sonenta/i18n-core >= 1.1.2); before that it existed in
+        // the engine with no door to it.
+        i18n.resetMissingDedup();
+      },
     );
   });
 
