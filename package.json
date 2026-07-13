@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@sonenta/feedback": "^1.2.0",
-    "@sonenta/i18n-core": "1.1.8",
+    "@sonenta/i18n-core": "1.1.9",
     "@sonenta/svelte-i18n": "^1.1.0",
     "i18next": "^26.3.1"
   },
